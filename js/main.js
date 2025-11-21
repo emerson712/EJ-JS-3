@@ -82,4 +82,30 @@ document.addEventListener('DOMContentLoaded', ()=>{
             obstacle.style.left = obstaclePosition + 'px';
         }, 20);
     }
+
+    function iniciarJuego() {
+        document.querySelectorAll('.obstaculo').forEach(obs => obs.remove() );
+        score = 0;
+        puntuacionDysplay.textContent = 'Puntuación: 0';
+        botBottom = 30;
+        pixelBot.style.bottom = botBottom + 'px';
+        isJumping = false;
+        gameOver = false;
+        mensajeJuego.style.display = 'none';
+        suelo.style.animationDelayState = 'running';
+
+        obstacleInterval = setInterval(generarObstaculo, 2000);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                iniciarJuego();
+            } else {
+                jump();
+            }
+        });
+
+        mensajeJuego.style.display = 'block';
+        suelo.style.animationPlayState = 'pause';
+
 });
