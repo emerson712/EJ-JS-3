@@ -1,10 +1,9 @@
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', () => {
     const pixelBot = document.getElementById("pixel-bot");
     const juegoContenedor = document.getElementById("juego-contenedor");
     const mensajeJuego = document.getElementById("mensaje-juego");
-    const puntuacionDysplay = document.getElementById("puntuacion-display");
+    const puntuacionDisplay = document.getElementById("puntuacion");
     const suelo = document.getElementById("suelo");
-
 
     let isJumping = false;
     let gravity = 0.9;
@@ -16,34 +15,34 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
     const gameWith = 900;
 
-    function jum(params) {
-        if(isJumping) return;
+    function jump() {
+        if (isJumping) return;
         isJumping = true;
         let jumpHeight = 150;
         let jumpSpeed = 10;
         let currentJumpHeight = 0;
 
         const upTimerId = setInterval(() => {
-            if(currentJumpHeight >= jumpHeight){
+            if (currentJumpHeight >= jumpHeight) {
                 clearInterval(upTimerId);
-                const dowTimerId = setInterval(() => {
+                const downTimerId = setInterval(() => {
                     if (botBottom <= 30) {
-                        clearInterval(dowTimerId);
+                        clearInterval(downTimerId);
+                        botBottom = 30;
                         pixelBot.style.bottom = botBottom + 'px';
                         isJumping = false;
                     }
                     botBottom -= jumpSpeed;
-                    pixelBot.style.bottom =botBottom + 'px';
+                    pixelBot.style.bottom = botBottom + 'px';
                 }, 20);
             }
             botBottom += jumpSpeed;
             currentJumpHeight += jumpSpeed;
-            pixelBot.style.bottom = botBottom + PX;
+            pixelBot.style.bottom = botBottom + 'px';
         }, 20);
-
     }
 
-    function generarObstaculo () {
+    function generarObstaculo() {
         if (gameOver) {
             return;
         }
@@ -53,28 +52,29 @@ document.addEventListener('DOMContentLoaded', ()=>{
         obstacle.classList.add('obstaculo');
         juegoContenedor.appendChild(obstacle);
 
-        let randomTime = Math.random() * 2000+1000;
+        let randomTime = Math.random() * 2000 + 1000;
 
         const moverObstaculo = setInterval(() => {
-            if(obstaclePosition < -30){
+            if (obstaclePosition < -30) {
                 clearInterval(moverObstaculo);
+                juegoContenedor.removeChild(obstacle);
                 score++;
-                puntuacionDysplay.textContent = 'Puntuación: ' + score;
+                puntuacionDisplay.textContent = 'puntuación: ' + score;
             }
 
-            if(obstaclePosition > 50
+            if(
+                obstaclePosition > 50
                 &&
                 obstaclePosition < (100)
                 &&
                 botBottom < (80)
-                
             ) {
                 clearInterval(moverObstaculo);
                 clearInterval(gameLoopInterval);
                 clearInterval(obstacleInterval);
                 gameOver = true;
-                mensajeJuego = 'GAME OVER! puntuación final: '+score;
-                mensajeJuego = ' \n Presione ESPACIO para reiniciar';
+                mensajeJuego.textContent = 'GAME OVER! Puntuación final: '+score;
+                mensajeJuego.textContent += '\n Presione ESPACIO para reiniciar';
                 mensajeJuego.style.display = 'block';
                 suelo.style.animationPlayState = 'pause';
             }
@@ -84,28 +84,29 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
 
     function iniciarJuego() {
-        document.querySelectorAll('.obstaculo').forEach(obs => obs.remove() );
+        document.querySelectorAll('.obstaculo').forEach(obs => obs.remove());
         score = 0;
-        puntuacionDysplay.textContent = 'Puntuación: 0';
+        puntuacionDisplay.textContent = 'Puntuación: 0';
         botBottom = 30;
         pixelBot.style.bottom = botBottom + 'px';
         isJumping = false;
         gameOver = false;
         mensajeJuego.style.display = 'none';
-        suelo.style.animationDelayState = 'running';
+        suelo.style.animationPlayState = 'running';
 
         obstacleInterval = setInterval(generarObstaculo, 2000);
+    }
+
+    document.addEventListener('keydown',(e) => {
+        if(e.code === 'Space') {
+            iniciarJuego();
+        } else {
+            jump();
         }
+    });
 
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                iniciarJuego();
-            } else {
-                jump();
-            }
-        });
-
-        mensajeJuego.style.display = 'block';
-        suelo.style.animationPlayState = 'pause';
+    mensajeJuego.style.display = 'block';
+    suelo.style.animationPlayState = 'pause';
 
 });
+
