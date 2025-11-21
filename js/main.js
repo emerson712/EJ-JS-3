@@ -42,4 +42,44 @@ document.addEventListener('DOMContentLoaded', ()=>{
         }, 20);
 
     }
+
+    function generarObstaculo () {
+        if (gameOver) {
+            return;
+        }
+
+        let obstaclePosition = gameWith;
+        const obstacle = document.createElement('div');
+        obstacle.classList.add('obstaculo');
+        juegoContenedor.appendChild(obstacle);
+
+        let randomTime = Math.random() * 2000+1000;
+
+        const moverObstaculo = setInterval(() => {
+            if(obstaclePosition < -30){
+                clearInterval(moverObstaculo);
+                score++;
+                puntuacionDysplay.textContent = 'Puntuación: ' + score;
+            }
+
+            if(obstaclePosition > 50
+                &&
+                obstaclePosition < (100)
+                &&
+                botBottom < (80)
+                
+            ) {
+                clearInterval(moverObstaculo);
+                clearInterval(gameLoopInterval);
+                clearInterval(obstacleInterval);
+                gameOver = true;
+                mensajeJuego = 'GAME OVER! puntuación final: '+score;
+                mensajeJuego = ' \n Presione ESPACIO para reiniciar';
+                mensajeJuego.style.display = 'block';
+                suelo.style.animationPlayState = 'pause';
+            }
+            obstaclePosition -= 10;
+            obstacle.style.left = obstaclePosition + 'px';
+        }, 20);
+    }
 });
